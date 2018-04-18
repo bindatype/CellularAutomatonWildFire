@@ -8,7 +8,13 @@
 # define NX 50
 # define NY 20
 
+typedef struct {
+	char STATE;
+	double B,I,D;
+} tree;
+
 void timestamp ( void );
+void showforest (int, int, tree[NX][NY]);
 
 int main ( void )
 {
@@ -16,13 +22,8 @@ int main ( void )
 	int j;
 	int nx = NX;
 	int ny = NY;
-	int NSTEPS = 1000000;
+	int NSTEPS = 10;
 	struct timeval start_time, stop_time, elapsed_time;
-
-	typedef struct {
-		char STATE;
-		double B,I,D;
-	} tree;
 
 	tree t[NX][NY];  
 	tree tnew[NX][NY];  
@@ -39,7 +40,7 @@ int main ( void )
 		{
 			if( i == 0 || j == 0 || i == nx -1 || j == ny-1 )
 			{
-                                        tnew[i][j].STATE = ' ';
+				tnew[i][j].STATE = ' ';
 			} else {
 				t[i][j].D = tnew[i][j].D = (double) rand() /RAND_MAX;
 				t[i][j].B = tnew[i][j].B = (double) rand() /RAND_MAX; 
@@ -128,33 +129,12 @@ int main ( void )
 			}
 
 		}
-		/*
-		   Check for convergence.
-		 */
-
-		/*		puts ("************************************************************");
-				for ( j = 0; j < ny; j++ )
-				{
-				for ( i = 0; i < nx; i++ )
-				{
-				printf("%c ",tnew[i][j].STATE);
-				}
-				printf("\n");
-				}
-		 */
+		showforest(nx,ny,tnew);
 	}
 	gettimeofday(&stop_time,NULL);
 
 	puts("AFTER FIRE");
-	for ( j = 0; j < ny; j++ )
-	{
-		for ( i = 0; i < nx; i++ )
-		{
-			printf("%c ",tnew[i][j].STATE);
-		}
-		printf("\n");
-	}
-
+	showforest(nx,ny,tnew);
 	printf ( "\n" );
 	printf ( "Almeida et al.,\n \tJournal of Physics: \n\tConference Series 285 (2011) 012038 \n\tdoi:10.1088/1742-6596/285/1/012038:\n" );
 
@@ -183,4 +163,19 @@ void timestamp ( void )
 
 	return;
 # undef TIME_SIZE
+}
+
+void showforest(int nx, int ny, tree tnew[nx][ny])
+{
+	int i,j;
+	for ( j = 0; j < ny; j++ )
+	{
+		for ( i = 0; i < nx; i++ )
+		{
+			printf("%c ",tnew[i][j].STATE);
+		}
+		printf("\n");
+	}
+
+
 }
