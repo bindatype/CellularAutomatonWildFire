@@ -4,17 +4,27 @@
 # include <math.h>
 # include <time.h>
 # include <sys/time.h>
+# include <unistd.h>
 
-# define NX 50
+# define NX 30
 # define NY 20
+#define ANSI_COLOR_RED     "\x1b[41m"
+#define ANSI_COLOR_GREEN   "\x1b[42m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+#define CLEAR_SCREEN	   "\e[1;1H\e[2J"
 
 typedef struct {
 	char STATE;
 	double B,I,D;
-} tree;
+} forest;
 
 void timestamp ( void );
-void showforest (int, int, tree[NX][NY]);
+void showforest (int, int, forest[NX][NY]);
+void p(const char *str);
 
 int main ( void )
 {
@@ -22,11 +32,11 @@ int main ( void )
 	int j;
 	int nx = NX;
 	int ny = NY;
-	int NSTEPS = 10;
+	int NSTEPS = 100;
 	struct timeval start_time, stop_time, elapsed_time;
 
-	tree t[NX][NY];  
-	tree tnew[NX][NY];  
+	forest t[NX][NY];  
+	forest tnew[NX][NY];  
 
 	srand(time(NULL));   // should only be called once
 	double Dinit=0.85;
@@ -43,8 +53,8 @@ int main ( void )
 				tnew[i][j].STATE = ' ';
 			} else {
 				t[i][j].D = tnew[i][j].D = (double) rand() /RAND_MAX;
-				t[i][j].B = tnew[i][j].B = (double) rand() /RAND_MAX; 
-				t[i][j].I = tnew[i][j].I = (double) rand() /RAND_MAX; 
+				t[i][j].B = tnew[i][j].B = 0.75;// (double) rand() /RAND_MAX; 
+				t[i][j].I = tnew[i][j].I = 0.75;//(double) rand() /RAND_MAX; 
 				if ( Dinit - tnew[i][j].D > 0 ) {
 					tnew[i][j].STATE = '^'; 
 				} else {
@@ -59,14 +69,8 @@ int main ( void )
 	/* Everlasting fire */ //	tnew[nx/2][ny/2].B = 1;
 	tnew[nx/2][ny/2].STATE = 'F';
 
-	for ( j = 0; j < ny; j++ )
-	{
-		for ( i = 0; i < nx; i++ )
-		{
-			printf("%c ",tnew[i][j].STATE);
-		}
-		printf("\n");
-	}
+
+	showforest(nx,ny,tnew);
 
 	/* Let it burn */
 	int it;
@@ -142,6 +146,7 @@ int main ( void )
 	timestamp ( );
 	timersub(&stop_time, &start_time, &elapsed_time);
 	printf("Elapsed Time: %f \n", elapsed_time.tv_sec+elapsed_time.tv_usec/1000000.0);
+
 	return 0;
 }
 /******************************************************************************/
@@ -165,17 +170,36 @@ void timestamp ( void )
 # undef TIME_SIZE
 }
 
-void showforest(int nx, int ny, tree tnew[nx][ny])
+/******************************************************************************/
+void showforest(int nx, int ny, forest tnew[nx][ny])
 {
 	int i,j;
 	for ( j = 0; j < ny; j++ )
 	{
 		for ( i = 0; i < nx; i++ )
 		{
-			printf("%c ",tnew[i][j].STATE);
+			if (tnew[i][j].STATE == 'F')
+			{
+				printf(ANSI_COLOR_RED"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+			}  
+			else if (tnew[i][j].STATE == '^')
+			{
+				printf(ANSI_COLOR_GREEN"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+			}else if (tnew[i][j].STATE == '.')
+			{
+				printf(ANSI_COLOR_YELLOW"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+			} else {
+				printf("%c ",tnew[i][j].STATE);
+			}
+
+
 		}
 		printf("\n");
 	}
 
+	sleep(1);
+	printf(CLEAR_SCREEN);
 
 }
+
+
