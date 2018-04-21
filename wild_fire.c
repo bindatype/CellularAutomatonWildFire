@@ -6,8 +6,8 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-# define NX 30
-# define NY 20
+# define NX 300
+# define NY 150
 #define ANSI_COLOR_RED     "\x1b[41m"
 #define ANSI_COLOR_GREEN   "\x1b[42m"
 #define ANSI_COLOR_YELLOW  "\x1b[33m"
@@ -24,6 +24,7 @@ typedef struct {
 
 void timestamp ( void );
 void showforest (int, int, forest[NX][NY]);
+void showforest_persist (int, int, forest[NX][NY]);
 void p(const char *str);
 
 int main ( void )
@@ -54,7 +55,7 @@ int main ( void )
 			} else {
 				t[i][j].D = tnew[i][j].D = (double) rand() /RAND_MAX;
 				t[i][j].B = tnew[i][j].B = 0.75;// (double) rand() /RAND_MAX; 
-				t[i][j].I = tnew[i][j].I = 0.75;//(double) rand() /RAND_MAX; 
+				t[i][j].I = tnew[i][j].I = 0.99;//(double) rand() /RAND_MAX; 
 				if ( Dinit - tnew[i][j].D > 0 ) {
 					tnew[i][j].STATE = '^'; 
 				} else {
@@ -114,20 +115,34 @@ int main ( void )
 				// if cell ignites.
 				if ( t[i][j].STATE == '^' )
 				{
-					if (t[i-1][j-1].STATE == 'F' ||
-							t[i-1][j].STATE == 'F' ||
-							t[i-1][j+1].STATE == 'F' ||
-							t[i][j-1].STATE == 'F' ||
-							t[i][j+1].STATE == 'F' ||
-							t[i+1][j-1].STATE == 'F' ||
-							t[i+1][j].STATE == 'F' ||
-							t[i+1][j+1].STATE == 'F' )
+					// Either a corner neighbor possibly ignites cell
+					// or side neighbor;
+					// Corner neighbor influence is suppressed but 1/sqrt(2)
+					if ( 0.5 < (double) rand()/ RAND_MAX) 
 					{
-						if (t[i][j].I > (double) rand() /RAND_MAX)
+						if (t[i-1][j-1].STATE == 'F' ||
+								t[i-1][j+1].STATE == 'F' ||
+								t[i+1][j-1].STATE == 'F' ||
+								t[i+1][j+1].STATE == 'F' )
 						{
-							tnew[i][j].STATE = 'F';
+							if (t[i][j].I/sqrt(2.) > (double) rand() /RAND_MAX)
+							{
+								tnew[i][j].STATE = 'F';
+							}
+						}
+					} else {
+						if (t[i-1][j].STATE == 'F' ||
+								t[i][j-1].STATE == 'F' ||
+								t[i][j+1].STATE == 'F' ||
+								t[i+1][j].STATE == 'F' )
+						{
+							if (t[i][j].I > (double) rand() /RAND_MAX)
+							{
+								tnew[i][j].STATE = 'F';
+							}
 						}
 					}
+
 				}
 
 			}
@@ -138,15 +153,21 @@ int main ( void )
 	gettimeofday(&stop_time,NULL);
 
 	puts("AFTER FIRE");
-	showforest(nx,ny,tnew);
+	showforest_persist(nx,ny,tnew);
 	printf ( "\n" );
 	printf ( "Almeida et al.,\n \tJournal of Physics: \n\tConference Series 285 (2011) 012038 \n\tdoi:10.1088/1742-6596/285/1/012038:\n" );
 
 	printf ( "\n" );
 	timestamp ( );
 	timersub(&stop_time, &start_time, &elapsed_time);
-	printf("Elapsed Time: %f \n", elapsed_time.tv_sec+elapsed_time.tv_usec/1000000.0);
-
+	/*
+	   printf("Elapsed Time: %f \n", elapsed_time.tv_sec+elapsed_time.tv_usec/1000000.0);
+	   p("you "); p("can't "); p("see "); p("me");
+	   write(1,"\33[2K\r",5); //erase line and carriage return
+	   write(1,"\33[1A",4); // move 1 line up
+	   write(1,"\33[2K\r",5); //erase line and carriage return
+	   p("Ohh .. yeah!!\n");
+	   */
 	return 0;
 }
 /******************************************************************************/
@@ -201,5 +222,40 @@ void showforest(int nx, int ny, forest tnew[nx][ny])
 	printf(CLEAR_SCREEN);
 
 }
+/******************************************************************************/
+void showforest_persist(int nx, int ny, forest tnew[nx][ny])
+{
+	int i,j;
+	for ( j = 0; j < ny; j++ )
+	{
+		for ( i = 0; i < nx; i++ )
+		{
+			if (tnew[i][j].STATE == 'F')
+			{
+				printf(ANSI_COLOR_RED"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+			}
+			else if (tnew[i][j].STATE == '^')
+			{
+				printf(ANSI_COLOR_GREEN"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+			}else if (tnew[i][j].STATE == '.')
+			{
+				printf(ANSI_COLOR_YELLOW"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+			} else {
+				printf("%c ",tnew[i][j].STATE);
+			}
+
+
+		}
+		printf("\n");
+	}
+
+}
+
+/******************************************************************************/
+void p(const char *str){
+	write(1,str,strlen(str));
+	sleep(1);
+}
+
 
 
