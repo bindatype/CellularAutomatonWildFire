@@ -14,6 +14,7 @@
 #define ANSI_COLOR_BLUE    "\x1b[34m"
 #define ANSI_COLOR_MAGENTA "\x1b[35m"
 #define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_LTGRAY   "\x1b[100m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define CLEAR_SCREEN	   "\e[1;1H\e[2J"
 
@@ -207,7 +208,7 @@ void showforest(int nx, int ny, forest tnew[nx][ny])
 				printf(ANSI_COLOR_GREEN"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
 			}else if (tnew[i][j].STATE == '.')
 			{
-				printf(ANSI_COLOR_YELLOW"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+				printf(ANSI_COLOR_LTGRAY"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
 			} else {
 				printf("%c ",tnew[i][j].STATE);
 			}
@@ -238,7 +239,7 @@ void showforest_persist(int nx, int ny, forest tnew[nx][ny])
 				printf(ANSI_COLOR_GREEN"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
 			}else if (tnew[i][j].STATE == '.')
 			{
-				printf(ANSI_COLOR_YELLOW"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
+				printf(ANSI_COLOR_LTGRAY"%c "ANSI_COLOR_RESET,tnew[i][j].STATE);
 			} else {
 				printf("%c ",tnew[i][j].STATE);
 			}
