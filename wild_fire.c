@@ -20,6 +20,7 @@
 typedef struct {
 	char STATE;
 	double B,I,D;
+	int i,j;
 } forest;
 
 void timestamp ( void );
@@ -49,10 +50,16 @@ int main ( void )
 	{
 		for ( i = 0; i < nx; i++ )
 		{
+			// Cell sites are aware of their own location. 
+			tnew[i][j].i = i;
+			tnew[i][j].j = j;
+
+			// No trees around edge of forest
 			if( i == 0 || j == 0 || i == nx -1 || j == ny-1 )
 			{
 				tnew[i][j].STATE = ' ';
 			} else {
+				// populate forest with trees
 				t[i][j].D = tnew[i][j].D = (double) rand() /RAND_MAX;
 				t[i][j].B = tnew[i][j].B = 0.75;// (double) rand() /RAND_MAX; 
 				t[i][j].I = tnew[i][j].I = 0.99;//(double) rand() /RAND_MAX; 
@@ -83,16 +90,16 @@ int main ( void )
 		 *   Save the current burn state.
 		 *   */
 
-		for ( j = 0; j < ny; j++ )
+/*		for ( j = 0; j < ny; j++ )
 		{
 			for ( i = 0; i < nx; i++ )
 			{
 				t[i][j].STATE = tnew[i][j].STATE;
 			}
 		}
-
+*/
 		//		memcpy(&t,&tnew,sizeof(tnew));
-		//		memcpy(t,tnew,sizeof(tnew));
+				memcpy(t,tnew,sizeof(tnew));
 		/*
 		 *  Scan for burning neighbors 
 		 *   
