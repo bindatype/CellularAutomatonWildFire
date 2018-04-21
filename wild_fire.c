@@ -160,14 +160,6 @@ int main ( void )
 	printf ( "\n" );
 	timestamp ( );
 	timersub(&stop_time, &start_time, &elapsed_time);
-	/*
-	   printf("Elapsed Time: %f \n", elapsed_time.tv_sec+elapsed_time.tv_usec/1000000.0);
-	   p("you "); p("can't "); p("see "); p("me");
-	   write(1,"\33[2K\r",5); //erase line and carriage return
-	   write(1,"\33[1A",4); // move 1 line up
-	   write(1,"\33[2K\r",5); //erase line and carriage return
-	   p("Ohh .. yeah!!\n");
-	   */
 	return 0;
 }
 /******************************************************************************/
@@ -252,10 +244,4 @@ void showforest_persist(int nx, int ny, forest tnew[nx][ny])
 }
 
 /******************************************************************************/
-void p(const char *str){
-	write(1,str,strlen(str));
-	sleep(1);
-}
-
-
 
