@@ -63,7 +63,7 @@ int main ( void )
 				// populate forest with trees
 				t[i][j].D = tnew[i][j].D = (double) rand() /RAND_MAX;
 				t[i][j].B = tnew[i][j].B = 0.75;// (double) rand() /RAND_MAX; 
-				t[i][j].I = tnew[i][j].I = 0.99;//(double) rand() /RAND_MAX; 
+				t[i][j].I = tnew[i][j].I = 0.5;//(double) rand() /RAND_MAX; 
 				if ( Dinit - tnew[i][j].D > 0 ) {
 					tnew[i][j].STATE = '^'; 
 				} else {
