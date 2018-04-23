@@ -41,7 +41,7 @@ int main ( void )
 	forest t[NX][NY];  
 	forest tnew[NX][NY];  
 
-	srand(time(NULL));   // should only be called once
+	srand(time(NULL));   
 	double Dinit=0.85;
 
 	gettimeofday(&start_time,NULL);
@@ -75,7 +75,7 @@ int main ( void )
 
 	/* Start a fire in the middle of the grid */
 
-	/* Everlasting fire */ //	tnew[nx/2][ny/2].B = 1;
+	/* Constant source fire */ //	tnew[nx/2][ny/2].B = 1;
 	tnew[nx/2][ny/2].STATE = 'F';
 
 
