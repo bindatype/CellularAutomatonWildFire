@@ -7,7 +7,7 @@ import random
 import sys
 import math
 import time
-
+import copy
 
 def printf(format, *args):
     sys.stdout.write(format % args)
@@ -25,7 +25,7 @@ def showforest(nx,ny,t):
                 printf('\033[0m'"%c "'\033[0m',tnew[i][j].STATE)
         printf("\n")
     printf('\x1b[2J\x1b[H')
-    time.sleep(1)
+#    time.sleep(1)
     
 def showforest_persist(nx,ny,t):
     for i in range(ny):
@@ -44,9 +44,9 @@ fig = plt.figure()
 
 
 prob = 0.2
-NX = 500
-NY = 200
-generations = 200
+NX = 30
+NY = 30
+generations = 10
 Forest = namedtuple('Forest', 'STATE B I D')
 tnew = []
 
@@ -54,7 +54,7 @@ for i in range(NY):
     new = []
     for j in range(NX):
         #Node = Forest('E',random.random(),random.random(),random.random())
-        Node = Forest(' ',0.75,0.25,random.random())
+        Node = Forest(' ',0.5,0.95,random.random())
         new.append(Node)
     tnew.append(new)
 
@@ -68,7 +68,7 @@ for i in range(1,NY-1):
 
 
 #Start a fire in the middle of the grid */
-# Everlasting fire */ //	tnew[nx/2][ny/2].B = 1;
+# Constant source fire */ //	tnew[nx/2][ny/2].B = 1;
 tnew[NY//2][NX//2] = tnew[NY//2][NX//2]._replace(STATE = 'F');
 
 
@@ -77,12 +77,14 @@ generation = 0
 ims=[]
 
 """
+t = []
+t = list(tnew)
 for i in tqdm(range(generations)):
-    t = list(tnew)
-    showforest(NX,NY,t)
-
-    for i in range(NY):
-        for j in range(NX):
+    t = copy.deepcopy(tnew)
+    print(id(t),id(tnew),id(t[0]),id(tnew[0]),id(new),id(t[0][0]))
+    for i in range(1,NY-1):
+        for j in range(1,NX-1):
+            
             #If a cell is burning see if it continues burning
             #otherwise the fire goes out. 
             if t[i][j].STATE == 'F':
@@ -95,12 +97,14 @@ for i in tqdm(range(generations)):
                 # or side neighbor;
                 # Corner neighbor influence is suppressed but 1/sqrt(2)
                 if 0.5 > random.random():
-                    if (t[i-1][j-1].STATE == 'F')or(t[i-1][j+1].STATE == 'F')or(t[i+1][j-1].STATE == 'F')or(t[i+1][j+1].STATE == 'F') :
+                    if (t[i+1][j+1].STATE=='F')or(t[i-1][j+1].STATE=='F')or(t[i+1][j-1].STATE=='F')or(t[i-1][j-1].STATE=='F'):
                         if t[i][j].I/math.sqrt(2.) > random.random():
                             tnew[i][j] = tnew[i][j]._replace(STATE='F') 
                 else :    
-                    if (t[i-1][j].STATE == 'F')or(t[i][j-1].STATE == 'F')or(t[i][j+1].STATE == 'F')or(t[i+1][j].STATE == 'F') :
+                    if (t[i+1][j].STATE == 'F')or(t[i][j+1].STATE == 'F')or(t[i][j-1].STATE == 'F')or(t[i-1][j].STATE == 'F') :
                             tnew[i][j] = tnew[i][j]._replace(STATE='F') 
+            showforest(NX,NY,tnew)
+
                     
 showforest_persist(NX,NY,t)
 
