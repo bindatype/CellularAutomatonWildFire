@@ -42,7 +42,7 @@ int main ( void )
 	forest tnew[NX][NY];  
 
 	srand(time(NULL));   
-	double Dinit=0.85;
+	double Dinit=1;
 
 	gettimeofday(&start_time,NULL);
 
@@ -62,8 +62,8 @@ int main ( void )
 			} else {
 				// populate forest with trees
 				t[i][j].D = tnew[i][j].D = (double) rand() /RAND_MAX;
-				t[i][j].B = tnew[i][j].B = 0.75;// (double) rand() /RAND_MAX; 
-				t[i][j].I = tnew[i][j].I = 0.5;//(double) rand() /RAND_MAX; 
+				t[i][j].B = tnew[i][j].B = 0.5;// (double) rand() /RAND_MAX; 
+				t[i][j].I = tnew[i][j].I = 0.95;//(double) rand() /RAND_MAX; 
 				if ( Dinit - tnew[i][j].D > 0 ) {
 					tnew[i][j].STATE = '^'; 
 				} else {
@@ -127,7 +127,7 @@ int main ( void )
 					// or side neighbor;
 					// Corner neighbor influence is suppressed but 1/sqrt(2)
 					// 0.293 is approx = 1-1/sqrt(2)
-					if ( 0.293 < (double) rand()/ RAND_MAX) 
+					if ( 1*0.293 > (double) rand()/ RAND_MAX) 
 					{
 						if (t[i-1][j-1].STATE == 'F' ||
 								t[i-1][j+1].STATE == 'F' ||

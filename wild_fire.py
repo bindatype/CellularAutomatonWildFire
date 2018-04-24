@@ -60,7 +60,7 @@ for i in range(NY):
 
 
 # Fill forest with trees
-Dinit = 0.85
+Dinit = 1
 for i in range(1,NY-1):
     for j in range(1,NX-1):
         if Dinit - tnew[i][j].D > 0:
