@@ -96,6 +96,7 @@ for i in tqdm(range(generations)):
                 # Either a corner neighbor possibly ignites cell
                 # or side neighbor;
                 # Corner neighbor influence is suppressed but 1/sqrt(2)
+                # 0.293 is approx = 1-1/sqrt(2)
                 if 0.293 > random.random():
                     if (t[i+1][j+1].STATE=='F')or(t[i-1][j+1].STATE=='F')or(t[i+1][j-1].STATE=='F')or(t[i-1][j-1].STATE=='F'):
                         if t[i][j].I > random.random():
