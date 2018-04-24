@@ -126,14 +126,14 @@ int main ( void )
 					// Either a corner neighbor possibly ignites cell
 					// or side neighbor;
 					// Corner neighbor influence is suppressed but 1/sqrt(2)
-					if ( 0.5 < (double) rand()/ RAND_MAX) 
+					if ( 0.293 < (double) rand()/ RAND_MAX) 
 					{
 						if (t[i-1][j-1].STATE == 'F' ||
 								t[i-1][j+1].STATE == 'F' ||
 								t[i+1][j-1].STATE == 'F' ||
 								t[i+1][j+1].STATE == 'F' )
 						{
-							if (t[i][j].I/sqrt(2.) > (double) rand() /RAND_MAX)
+							if (t[i][j].I > (double) rand() /RAND_MAX)
 							{
 								tnew[i][j].STATE = 'F';
 							}
