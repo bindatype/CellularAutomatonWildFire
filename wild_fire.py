@@ -25,7 +25,7 @@ def showforest(nx,ny,t):
                 printf('\033[0m'"%c "'\033[0m',tnew[i][j].STATE)
         printf("\n")
     printf('\x1b[2J\x1b[H')
-#    time.sleep(1)
+    time.sleep(1)
     
 def showforest_persist(nx,ny,t):
     for i in range(ny):
@@ -44,9 +44,9 @@ fig = plt.figure()
 
 
 prob = 0.2
-NX = 30
-NY = 30
-generations = 10
+NX = 300
+NY = 150
+generations = 30
 Forest = namedtuple('Forest', 'STATE B I D')
 tnew = []
 
@@ -54,7 +54,7 @@ for i in range(NY):
     new = []
     for j in range(NX):
         #Node = Forest('E',random.random(),random.random(),random.random())
-        Node = Forest(' ',0.5,0.95,random.random())
+        Node = Forest(' ',0.5,0.5,random.random())
         new.append(Node)
     tnew.append(new)
 
@@ -77,10 +77,11 @@ generation = 0
 ims=[]
 
 """
-t = []
-t = list(tnew)
+#t = list(tnew)
 for i in tqdm(range(generations)):
     t = copy.deepcopy(tnew)
+# uncomment for bug
+#    t = list(tnew)
     print(id(t),id(tnew),id(t[0]),id(tnew[0]),id(new),id(t[0][0]))
     for i in range(1,NY-1):
         for j in range(1,NX-1):
@@ -103,7 +104,8 @@ for i in tqdm(range(generations)):
                 else :    
                     if (t[i+1][j].STATE == 'F')or(t[i][j+1].STATE == 'F')or(t[i][j-1].STATE == 'F')or(t[i-1][j].STATE == 'F') :
                             tnew[i][j] = tnew[i][j]._replace(STATE='F') 
-            showforest(NX,NY,tnew)
+#            showforest(NX,NY,tnew)
+    showforest(NX,NY,tnew)
 
                     
 showforest_persist(NX,NY,t)
