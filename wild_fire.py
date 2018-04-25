@@ -1,7 +1,3 @@
-import numpy
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from tqdm import tqdm
 from collections import namedtuple
 import random
 import sys
@@ -40,10 +36,6 @@ def showforest_persist(nx,ny,t):
                 printf('\033[0m'"%c "'\033[0m',tnew[i][j].STATE)
         printf("\n")
 
-fig = plt.figure()
-
-
-prob = 0.2
 NX = 300
 NY = 150
 generations = 100
@@ -77,9 +69,7 @@ generation = 0
 ims=[]
 
 """
-t = []
-t = list(tnew)
-for i in tqdm(range(generations)):
+for i in range(generations):
     t = copy.deepcopy(tnew)
     print(id(t),id(tnew),id(t[0]),id(tnew[0]),id(new),id(t[0][0]))
     for i in range(1,NY-1):
