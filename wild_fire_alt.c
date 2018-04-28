@@ -169,7 +169,9 @@ int main ( void )
 
 			}
 		}
-		printf("%d %d %d %d %f %f\n",step,total, burning, area,burning/(2.*step),1.*area/(step*step));
+		// Uncomment for testing
+		//printf("%d %d %d %d %f %f\n",step,total, burning, area,burning/(2.*step),1.*area/(step*step));
+
 		showforest(nx,ny,tnew);
 	}
 	gettimeofday(&stop_time,NULL);
