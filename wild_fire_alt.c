@@ -6,8 +6,8 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-# define NX 30
-# define NY 50
+# define NX 60
+# define NY 70
 #define ANSI_COLOR_RED     "\x1b[41m"
 #define ANSI_COLOR_GREEN   "\x1b[42m"
 #define ANSI_COLOR_YELLOW  "\x1b[33m"
@@ -49,9 +49,9 @@ int main ( void )
 	*tnew = malloc(nx*ny*sizeof(forest));
 	for (i = 0; i < nx; i++)
 		*(tnew+i) = *tnew + i*ny;
-
+	
 	srand(time(NULL));   
-	double Dinit=1;
+	double Dinit=1.;
 
 	gettimeofday(&start_time,NULL);
 
@@ -91,11 +91,14 @@ int main ( void )
 	showforest(nx,ny,tnew);
 
 	/* Let it burn */
-	int it;
+	int step,li,lj;
+	int total,burning,area;
 
-	for (it=0 ;it<NSTEPS ;it++ )
+	for (step=0 ;step<NSTEPS ;step++ )
 	{
-
+		total = 0;
+		burning = 0;
+		area = 0;
 		/*
 		 *   Save the current burn state.
 		 *   */
@@ -109,7 +112,7 @@ int main ( void )
 		}
 
 		//		memcpy(&t,&tnew,sizeof(tnew));
-	//			memcpy(t,tnew,sizeof(tnew));
+		//memcpy(t,tnew,sizeof(tnew));
 		/*
 		 *  Scan for burning neighbors 
 		 *   
@@ -118,8 +121,33 @@ int main ( void )
 		{
 			for ( i = 1; i < nx-1; i++ )
 			{
-				//If a cell is burning see if it continues burning
-				//otherwise the fire goes out. 
+				if ( t[i][j].STATE == 'F' )
+				{	
+					for(lj = -1;lj < 2; lj++)
+					{
+						for(li = -1;li < 2; li++)
+						{
+							if ( !(lj == 0 && li == 0) ){
+								if ( t[i+li][j+lj].STATE == '^' )
+								{
+									if(abs(lj+li) == 0)
+									{
+										if (t[i+li][j+lj].I > (double) rand() /RAND_MAX)
+										{
+											tnew[i+li][j+lj].STATE = 'F';
+										}
+									} else {
+										if (t[i][j].I/(3*sqrt(2.)) > (double) rand() /RAND_MAX)
+										{
+											tnew[i+li][j+lj].STATE = 'F';
+										}
+
+									}
+								}
+							}
+						}
+					}
+				}
 				if ( t[i][j].STATE == 'F' )
 				{
 					if (t[i][j].B < (double) rand() /RAND_MAX)
@@ -127,50 +155,26 @@ int main ( void )
 						tnew[i][j].STATE = '.';
 					}	
 				}
-
-				// If cell is unburnt but has burning neighbors see
-				// if cell ignites.
-				if ( t[i][j].STATE == '^' )
+				total++;
+				if ( t[i][j].STATE == 'F' )
 				{
-					// Either a corner neighbor possibly ignites cell
-					// or side neighbor;
-					// Corner neighbor influence is suppressed but 1/sqrt(2)
-					// 0.293 is approx = 1-1/sqrt(2)
-					if ( 1*0.293 > (double) rand()/ RAND_MAX) 
-					{
-						if (t[i-1][j-1].STATE == 'F' ||
-								t[i-1][j+1].STATE == 'F' ||
-								t[i+1][j-1].STATE == 'F' ||
-								t[i+1][j+1].STATE == 'F' )
-						{
-							if (t[i][j].I > (double) rand() /RAND_MAX)
-							{
-								tnew[i][j].STATE = 'F';
-							}
-						}
-					} else {
-						if (t[i-1][j].STATE == 'F' ||
-								t[i][j-1].STATE == 'F' ||
-								t[i][j+1].STATE == 'F' ||
-								t[i+1][j].STATE == 'F' )
-						{
-							if (t[i][j].I > (double) rand() /RAND_MAX)
-							{
-								tnew[i][j].STATE = 'F';
-							}
-						}
-					}
-
+					burning++;
+				}
+				if ( t[i][j].STATE == 'F' || t[i][j].STATE == '.'  )
+				{
+					area++;
 				}
 
-			}
 
+
+			}
 		}
+		printf("%d %d %d %d %f %f\n",step,total, burning, area,burning/(2.*step),1.*area/(step*step));
 		showforest(nx,ny,tnew);
 	}
 	gettimeofday(&stop_time,NULL);
 
-	puts("AFTER FIRE");
+		puts("AFTER FIRE");
 	//showforest_persist(nx,ny,tnew);
 	printf ( "\n" );
 	printf ( "Almeida et al.,\n \tJournal of Physics: \n\tConference Series 285 (2011) 012038 \n\tdoi:10.1088/1742-6596/285/1/012038:\n" );
@@ -178,11 +182,11 @@ int main ( void )
 	printf ( "\n" );
 	timestamp ( );
 	timersub(&stop_time, &start_time, &elapsed_time);
-
+	
 	free(*t);
 	free(*tnew);
 	free(t);
-	free(tnew);	
+	free(tnew);
 	return 0;
 }
 /******************************************************************************/
