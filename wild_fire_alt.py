@@ -36,9 +36,9 @@ def showforest_persist(nx,ny,t):
                 printf('\033[0m'"%c "'\033[0m',tnew[i][j].STATE)
         printf("\n")
 
-NX = 80
-NY = 80
-generations = 50
+NX = 150
+NY = 150
+generations = 100
 Forest = namedtuple('Forest', 'STATE B I D')
 tnew = []
 
@@ -46,13 +46,13 @@ for i in range(NY):
     new = []
     for j in range(NX):
         #Node = Forest('E',random.random(),random.random(),random.random())
-        Node = Forest(' ',0.5,0.5,random.random())
+        Node = Forest(' ',0.75,0.99,random.random())
         new.append(Node)
     tnew.append(new)
 
 
 # Fill forest with trees
-Dinit = 0.85
+Dinit = 1
 for i in range(1,NY-1):
     for j in range(1,NX-1):
         if Dinit - tnew[i][j].D > 0:
@@ -64,14 +64,8 @@ for i in range(1,NY-1):
 tnew[NY//2][NX//2] = tnew[NY//2][NX//2]._replace(STATE = 'F');
 
 
-"""
-generation = 0
-ims=[]
-
-"""
-for i in range(generations):
+for step in range(generations):
     t = copy.deepcopy(tnew)
-    print(id(t),id(tnew),id(t[0]),id(tnew[0]),id(new),id(t[0][0]))
     for i in range(1,NY-1):
         for j in range(1,NX-1):
             if t[i][j].STATE == 'F':
@@ -84,12 +78,13 @@ for i in range(generations):
                                     if t[i+li][j+lj].I > random.random():
                                         tnew[i+li][j+lj] = tnew[i+li][j+lj]._replace(STATE='F')
                                 else:
-                                    if t[i+li][j+lj].I/math.sqrt(2.) > random.random():
+                                    if t[i+li][j+lj].I/(3.*math.sqrt(2.)) > random.random():
                                         tnew[i+li][j+lj] = tnew[i+li][j+lj]._replace(STATE='F')
                 # if cell is burning see if it goes out. 
                 if t[i][j].B < random.random():
                     tnew[i][j] = tnew[i][j]._replace(STATE='.')
-    showforest(NX,NY,tnew)
+    if step % 10 == 0:
+        showforest(NX,NY,tnew)
 
                     
 showforest_persist(NX,NY,t)

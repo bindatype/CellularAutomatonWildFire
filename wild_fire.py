@@ -36,9 +36,9 @@ def showforest_persist(nx,ny,t):
                 printf('\033[0m'"%c "'\033[0m',tnew[i][j].STATE)
         printf("\n")
 
-NX = 300
-NY = 150
-generations = 100
+NX = 80
+NY = 80
+generations = 50
 Forest = namedtuple('Forest', 'STATE B I D')
 tnew = []
 
@@ -46,7 +46,7 @@ for i in range(NY):
     new = []
     for j in range(NX):
         #Node = Forest('E',random.random(),random.random(),random.random())
-        Node = Forest(' ',0.5,0.95,random.random())
+        Node = Forest(' ',0.5,0.99,random.random())
         new.append(Node)
     tnew.append(new)
 
@@ -64,14 +64,9 @@ for i in range(1,NY-1):
 tnew[NY//2][NX//2] = tnew[NY//2][NX//2]._replace(STATE = 'F');
 
 
-"""
-generation = 0
-ims=[]
-
-"""
-for i in range(generations):
+for step in range(generations):
     t = copy.deepcopy(tnew)
-    print(id(t),id(tnew),id(t[0]),id(tnew[0]),id(new),id(t[0][0]))
+#    print(id(t),id(tnew),id(t[0]),id(tnew[0]),id(new),id(t[0][0]))
     for i in range(1,NY-1):
         for j in range(1,NX-1):
             
@@ -92,12 +87,10 @@ for i in range(generations):
                         if t[i][j].I > random.random():
                             tnew[i][j] = tnew[i][j]._replace(STATE='F') 
                 else :    
-                    if (t[i+1][j].STATE == 'F')or(t[i][j+1].STATE == 'F')or(t[i][j-1].STATE == 'F')or(t[i-1][j].STATE == 'F') :
+                    if (t[i-1][j].STATE == 'F')or(t[i][j-1].STATE == 'F')or(t[i][j+1].STATE == 'F')or(t[i+1][j].STATE == 'F') :
                         if t[i][j].I > random.random():
                             tnew[i][j] = tnew[i][j]._replace(STATE='F') 
     showforest(NX,NY,tnew)
-
-                    
-showforest_persist(NX,NY,t)
+showforest_persist(NX,NY,tnew)
 
 
